@@ -10,6 +10,10 @@ import retrofit2.Response
 
 class MainViewModel : ViewModel() {
 
+    //di bawah ini contoh encapsulation pada LiveData
+    // bisa dinamakan backing property
+    //dimana nilai mutable tidak dapat diubah dari luar kelas viewModel
+
     private val _restaurant = MutableLiveData<Restaurant>()
     private val _listReviews = MutableLiveData<List<CustomerReviewsItem>>()
     private val _isLoading = MutableLiveData<Boolean>()
@@ -49,6 +53,28 @@ class MainViewModel : ViewModel() {
                 Log.d(TAG, "onFailure: ${t.message.toString()}")
             }
 
+        })
+    }
+
+    fun postReview(review: String) {
+        _isLoading.value = true
+        val client = ApiConfig.getApiService().postReview(RESTAURANT_ID, "Choi", review)
+        client.enqueue(object : Callback<PostReviewResponse> {
+            override fun onResponse(
+                call: Call<PostReviewResponse>,
+                response: Response<PostReviewResponse>
+            ) {
+                if (response.isSuccessful) {
+                    _isLoading.value = false
+                    _listReviews.value = response.body()?.customerReviews
+                } else {
+                    Log.e(TAG, "onFailure: ${response.message()}", )
+                }
+            }
+
+            override fun onFailure(call: Call<PostReviewResponse>, t: Throwable) {
+                Log.d(TAG, "onFailure: ${t.message.toString()}")
+            }
         })
     }
 }

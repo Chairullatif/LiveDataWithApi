@@ -1,8 +1,10 @@
 package com.khoirullatif.livedatawithapiapp
 
+import android.content.Context
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.View
+import android.view.inputmethod.InputMethodManager
 import android.widget.ArrayAdapter
 import androidx.lifecycle.ViewModelProvider
 import com.bumptech.glide.Glide
@@ -44,5 +46,11 @@ class MainActivity : AppCompatActivity() {
             activityMainBinding.progressBar.visibility =
                 if (it) View.VISIBLE else View.GONE
         })
+
+        activityMainBinding.btnSend.setOnClickListener {
+            mainViewModel.postReview(activityMainBinding.edReview.text.toString())
+            val imm = getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+            imm.hideSoftInputFromWindow(it.windowToken,0)
+        }
     }
 }
