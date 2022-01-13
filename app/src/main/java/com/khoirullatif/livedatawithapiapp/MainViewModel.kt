@@ -17,10 +17,12 @@ class MainViewModel : ViewModel() {
     private val _restaurant = MutableLiveData<Restaurant>()
     private val _listReviews = MutableLiveData<List<CustomerReviewsItem>>()
     private val _isLoading = MutableLiveData<Boolean>()
+    private val _snackbarText = MutableLiveData<String>()
 
     val restaurant: LiveData<Restaurant> = _restaurant
     val listReviewsItem: LiveData<List<CustomerReviewsItem>> = _listReviews
     val isLoading: LiveData<Boolean> = _isLoading
+    val snackbarText: LiveData<String> = _snackbarText
 
     companion object {
         private const val TAG = "MainViewModel"
@@ -67,6 +69,7 @@ class MainViewModel : ViewModel() {
                 if (response.isSuccessful) {
                     _isLoading.value = false
                     _listReviews.value = response.body()?.customerReviews
+                    _snackbarText.value = response.body()?.message
                 } else {
                     Log.e(TAG, "onFailure: ${response.message()}", )
                 }
